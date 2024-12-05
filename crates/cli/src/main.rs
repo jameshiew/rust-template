@@ -66,20 +66,8 @@ async fn main() -> Result<()> {
         _ = sigterm_task => {
             bail!("didn't stop gracefully");
         }
-        result = app(app_ctx) => {
+        result = app::run(app_ctx) => {
             result
         }
     }
-}
-
-async fn app(ctx: CancellationToken) -> Result<()> {
-    tokio::select! {
-        _ = tokio::time::sleep(std::time::Duration::from_secs(120)) => {
-            tracing::info!("Finished sleeping");
-        }
-        _ = ctx.cancelled() => {
-            tracing::info!("Cancelled early");
-        }
-    }
-    Ok(())
 }
