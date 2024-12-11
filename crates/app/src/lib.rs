@@ -1,12 +1,16 @@
 use anyhow::Result;
+use settings::Settings;
 use tokio_util::sync::CancellationToken;
 
-pub async fn run(ctx: CancellationToken) -> Result<()> {
+pub mod settings;
+
+pub async fn run(cancellable: CancellationToken, settings: Settings) -> Result<()> {
+    println!("Sleeping for {} seconds", settings.sleep_seconds);
     tokio::select! {
-        _ = tokio::time::sleep(std::time::Duration::from_secs(120)) => {
+        _ = tokio::time::sleep(std::time::Duration::from_secs(settings.sleep_seconds)) => {
             tracing::info!("Finished sleeping");
         }
-        _ = ctx.cancelled() => {
+        _ = cancellable.cancelled() => {
             tracing::info!("Cancelled early");
         }
     }

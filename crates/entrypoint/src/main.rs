@@ -38,7 +38,7 @@ async fn main() -> Result<()> {
         cfg = cfg.add_source(config::File::from(cfg_path));
     }
     let cfg = cfg
-        .add_source(config::Environment::with_prefix(APP_NAME))
+        .add_source(config::Environment::with_prefix(APP_NAME).try_parsing(true))
         .build()?
         .try_deserialize::<settings::Settings>()?;
     tracing::info!(?cfg, "Starting up");
@@ -66,7 +66,7 @@ async fn main() -> Result<()> {
         _ = sigterm_task => {
             bail!("didn't stop gracefully");
         }
-        result = app::run(app_cancellable) => {
+        result = app::run(app_cancellable, cfg.app) => {
             result
         }
     }
