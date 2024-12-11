@@ -7,12 +7,14 @@ edition = "2021"
 
 [dependencies]
 anyhow = { workspace = true }
-clap = { workspace = true }
-config = { workspace = true }
-console-subscriber = { workspace = true }
 serde = { workspace = true }
 tokio = { workspace = true }
 tokio-util = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
+
 app = { path = "../app" }
+
+clap = { version = "4.5.23", features = ["derive"] }
+config = { version = "0.14.1", default-features = false, features = ["json5"] }
+console-subscriber = "0.4.1"
