@@ -20,6 +20,7 @@ jobs:
         with:
           components: rustfmt
           toolchain: nightly
+          rustflags:
       - run: cargo +nightly fmt --all -- --check
   test:
     runs-on: ubuntu-24.04
@@ -27,6 +28,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          rustflags:
       - uses: taiki-e/install-action@cargo-hack
       - run: cargo hack test --all-targets --feature-powerset
   docs:
@@ -35,6 +38,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          rustflags:
       - uses: taiki-e/install-action@cargo-hack
       - run: RUSTDOCFLAGS="-Dwarnings" cargo hack doc --document-private-items --no-deps --feature-powerset
   clippy:
@@ -51,5 +56,6 @@ jobs:
       - uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
           components: clippy
+          rustflags:
       - uses: taiki-e/install-action@cargo-hack
       - run: cargo hack clippy --all-targets --feature-powerset
