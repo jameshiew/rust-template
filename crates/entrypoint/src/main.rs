@@ -2,13 +2,13 @@ use std::path::PathBuf;
 
 use anyhow::{bail, Result};
 use clap::Parser;
-use cli::settings;
 use config::Config;
+use entrypoint::settings;
 use tokio::signal;
 use tokio_util::sync::CancellationToken;
 use tracing_subscriber::EnvFilter;
 
-const APP_NAME: &str = "CLI";
+const APP_NAME: &str = "APP";
 
 #[derive(Parser)]
 #[command(version)]
@@ -43,16 +43,16 @@ async fn main() -> Result<()> {
         .try_deserialize::<settings::Settings>()?;
     tracing::info!(?cfg, "Starting up");
 
-    let ctx = CancellationToken::new();
+    let cancellable = CancellationToken::new();
     let sigterm_timeout = cfg.sigterm_timeout_seconds;
-    let app_ctx = ctx.clone();
+    let app_cancellable = cancellable.clone();
 
     let sigterm_task = tokio::task::Builder::new()
         .name("sigterm handler")
         .spawn(async move {
             signal::ctrl_c().await.expect("Failed to listen for Ctrl-C");
             tracing::warn!("Received Ctrl-C, cancelling tasks");
-            ctx.cancel();
+            cancellable.cancel();
 
             if let Some(timeout) = sigterm_timeout {
                 tokio::time::sleep(std::time::Duration::from_secs(timeout)).await;
@@ -66,7 +66,7 @@ async fn main() -> Result<()> {
         _ = sigterm_task => {
             bail!("didn't stop gracefully");
         }
-        result = app::run(app_ctx) => {
+        result = app::run(app_cancellable) => {
             result
         }
     }
