@@ -4,6 +4,7 @@ version = "0.0.0"
 publish = false
 license = "MIT"
 edition = "2021"
+rust-version = "1.78.0"
 
 [dependencies]
 anyhow = { workspace = true }
