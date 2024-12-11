@@ -1,0 +1,5 @@
+{
+  sigterm_timeout_seconds: 2,
+  // app-specific settings
+  sleep_seconds: 3,
+}
