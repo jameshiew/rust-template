@@ -14,7 +14,7 @@ const APP_NAME: &str = "APP";
 #[command(version)]
 struct Cli {
     #[arg(long)]
-    tokio_console_enabled: bool,
+    tokio_console: bool,
     #[arg(short, long)]
     config: Option<PathBuf>,
 }
@@ -23,7 +23,7 @@ struct Cli {
 async fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    if cli.tokio_console_enabled {
+    if cli.tokio_console {
         console_subscriber::init();
         tracing::info!("Tokio console enabled");
     } else {
